@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hillshot</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%92%A5%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- LOBBY -->
+<div id="lobby" class="screen">
+  <div class="panel">
+    <h1>💥 Hill<span>shot</span></h1>
+    <p class="tag">Turn-based tank artillery. Angle, power, wind. Blow up your friends.</p>
+    <label>Your name
+      <input id="name" maxlength="16" placeholder="Player" autocomplete="off">
+    </label>
+    <div class="row">
+      <button id="createBtn" class="btn primary" disabled>Create room</button>
+    </div>
+    <div class="or"><span>or join by code</span></div>
+    <div class="row">
+      <input id="joinCode" maxlength="4" placeholder="CODE" class="code-in" autocomplete="off">
+      <button id="joinBtn" class="btn" disabled>Join</button>
+    </div>
+    <p id="lobbyErr" class="err"></p>
+    <p id="netState" class="err hidden">Connecting…</p>
+  </div>
+  <p class="foot">Made for playing together. Share the room code.</p>
+</div>
+
+<!-- ROOM (waiting) -->
+<div id="room" class="screen hidden">
+  <div class="panel">
+    <h2>Room <span id="roomCode" class="mono"></span></h2>
+    <p class="tag">Share this code. Up to 8 players. Host starts the match.</p>
+    <ul id="playerList" class="players"></ul>
+    <div class="row">
+      <button id="startBtn" class="btn primary hidden">Start match</button>
+      <button id="addBotBtn" class="btn hidden">+ Add bot</button>
+      <button id="removeBotBtn" class="btn ghost hidden">− Remove bot</button>
+      <button id="leaveBtn" class="btn ghost">Leave</button>
+    </div>
+    <p class="hint" id="waitHint">Waiting for the host to start…</p>
+    <p class="hint">Playing solo? Add a bot and start — you can add up to 7.</p>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen hidden">
+  <div id="topbar">
+    <div id="windBox" class="hud-item">
+      <span class="hud-label">WIND</span>
+      <span id="windVal" class="mono">0</span>
+      <span id="windArrow">→</span>
+    </div>
+    <div id="turnBox" class="hud-item"><span class="hud-label">TURN</span><span id="turnName">—</span><span id="turnTimer" class="turn-timer"></span></div>
+    <div id="playersHud" class="players-hud"></div>
+    <button id="muteBtn" class="hud-item mute" title="Mute / unmute">🔊</button>
+  </div>
+  <div id="cv"></div>
+  <div id="controls">
+    <div class="ctl">
+      <label>Angle <b id="angleVal">45°</b></label>
+      <div class="ctl-row">
+        <button class="nudge" data-t="angle" data-d="-1" aria-label="angle down">−</button>
+        <input id="angle" type="range" min="0" max="180" value="45">
+        <button class="nudge" data-t="angle" data-d="1" aria-label="angle up">+</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <label>Power <b id="powerVal">50</b></label>
+      <div class="ctl-row">
+        <button class="nudge" data-t="power" data-d="-1" aria-label="power down">−</button>
+        <input id="power" type="range" min="5" max="100" value="50">
+        <button class="nudge" data-t="power" data-d="1" aria-label="power up">+</button>
+      </div>
+    </div>
+    <div class="ctl weapon-ctl">
+      <label>Weapon</label>
+      <select id="weapon"></select>
+    </div>
+    <button id="fireBtn" class="btn fire" disabled>FIRE</button>
+  </div>
+  <p id="aimHint" class="aim-hint"><b>Aim:</b> click a target and the gun solves the shot · <b>drag from your tank</b> for angle+power · <b>wheel</b> or <b>W/S</b> power · <b>A/D</b> angle · <b>Shift</b> = x5 · <b>1-6</b> weapon · <b>Space</b> fire</p>
+  <div id="msg" class="hidden"></div>
+  <div id="chatWrap">
+    <div id="chatLog"></div>
+    <input id="chatIn" placeholder="Say something…" maxlength="200" autocomplete="off">
+  </div>
+</div>
+
+<script src="vendor/phaser.min.js" defer></script>
+<script src="game-view.js" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>

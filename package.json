@@ -1,0 +1,20 @@
+{
+  "name": "hillshot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Online turn-based tank artillery",
+  "main": "server/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

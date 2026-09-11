@@ -1,0 +1,30 @@
+services:
+  shellshock:
+    build: .
+    container_name: shellshock
+    restart: unless-stopped
+    environment:
+      PORT: "8090"
+      TZ: Asia/Tehran
+    # The running container already had the code binds but the file did not declare
+    # them: any recreate would silently revert the site to the baked image.
+    # ./data is READ-WRITE on purpose: it holds matches.jsonl, the match telemetry
+    # behind GET /stats, and it must survive rebuilds.
+    volumes:
+      - ./public:/app/public:ro
+      - ./server:/app/server:ro
+      - ./data:/app/data
+    expose:
+      - "8090"
+    mem_limit: 256m
+    networks:
+      - deploy_default
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+
+networks:
+  deploy_default:
+    external: true
