@@ -2,11 +2,22 @@
 
 Two players finish a full match online with bot option on a single domain with revised controls and tank asset.
 
-Play: https://hillshot.46.225.91.43.sslip.io (old `shellshock.` address 301s there).
+Play: https://hillshot.46.225.91.43.sslip.io (old `shellshock.` address redirects there).
 
-Not a storefront, not an HTML5 portal listing, not a Steam page.
+## Metric
 
-## Numbers that prove it
-- two-machine human matches finished: `python3 scripts/measure_hvh.py` - today: 2; target: 1
+Completed human-vs-human matches recorded by the live server's `humanVsHumanFinished` counter.
 
-source: server/telemetry.js, scripts/measure_hvh.py, GET /stats
+## Target
+
+At least **1** completed human-vs-human match.
+
+## Measure
+
+```sh
+python3 scripts/measure_hvh.py
+```
+
+Pass when the command exits 0 and prints an integer greater than or equal to `1`.
+
+Source: `server/telemetry.js`, `scripts/measure_hvh.py`, and `GET /stats`.
