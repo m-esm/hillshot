@@ -471,18 +471,23 @@
     // muzzle flash (hidden until fire)
     const flash = scene.add.image(32, -20, "proj").setScale(0).setTint(0xffe08a);
 
-    // name label
-    const label = scene.add.text(0, -56, t.name, {
+    // Kenney body as the identity badge above the side-view hull. The pack is
+    // top-down, so it cannot replace the hull on a side-view hill; it still has
+    // to appear in the match step or lobby/room/HUD would be the only places
+    // the asset shows up.
+    const badge = scene.add.image(0, -78, "body_" + assetForColor(t.color)).setOrigin(0.5, 1).setScale(0.36);
+    const label = scene.add.text(0, -52, t.name, {
       fontFamily: "Segoe UI, system-ui, sans-serif", fontSize: "15px", color: "#e8eef6",
       stroke: "#0c1422", strokeThickness: 4,
     }).setOrigin(0.5, 1);
 
-    c.add([shadow, tread, hull, turret, barrel, flash, label]);
+    c.add([shadow, tread, hull, turret, barrel, flash, badge, label]);
     // hull rides the slope; the name label stays upright and readable
     const tilt = groundTilt(t.x);
     c.rotation = tilt;
     label.rotation = -tilt;
-    S.tanks.set(t.id, { container: c, hull, barrel, flash, label, color: t.color, facing: t.facing });
+    badge.rotation = -tilt;
+    S.tanks.set(t.id, { container: c, hull, barrel, flash, label, badge, color: t.color, facing: t.facing });
     aimBarrel(t.id, S.aim.angle);
   }
 
@@ -530,6 +535,7 @@
       const tilt = groundTilt(nt.x);
       scene.tweens.add({ targets: tk.container, x: nt.x, y: nt.y, rotation: tilt, duration: 220, ease: "Quad.out" });
       if (tk.label) scene.tweens.add({ targets: tk.label, rotation: -tilt, duration: 220, ease: "Quad.out" });
+      if (tk.badge) scene.tweens.add({ targets: tk.badge, rotation: -tilt, duration: 220, ease: "Quad.out" });
       // terrain moved under the tank -> re-solve the barrel against the new tilt
       if (nt.hp > 0) scene.time.delayedCall(230, () => aimBarrel(nt.id, S.aim.angle));
       if (nt.hp <= 0 && !tk.dead) {
