@@ -21,21 +21,6 @@
   const SLING_R = 110;   // grab radius for slingshot aim
   const SLING_DIV = 1.4; // pull px -> power
   // Map server tank hex colors -> curated Kenney body/barrel asset keys.
-  const COLOR_ASSET = [
-    { hex: "#4cc9f0", key: "blue" },
-    { hex: "#f72585", key: "red" },
-    { hex: "#ffd166", key: "sand" },
-    { hex: "#06d6a0", key: "green" },
-    { hex: "#b5179e", key: "dark" },
-    { hex: "#fb8500", key: "bigRed" },
-    { hex: "#8ac926", key: "green" },
-    { hex: "#ff595e", key: "red" },
-  ];
-  const ASSET_KEYS = ["blue", "red", "sand", "green", "dark", "bigRed"];
-  function assetForColor(hex) {
-    const m = COLOR_ASSET.find((c) => c.hex.toLowerCase() === String(hex).toLowerCase());
-    return m ? m.key : "blue";
-  }
 
   let game = null, scene = null, readyCbs = [], sceneReady = false;
   const S = {
@@ -59,10 +44,6 @@
   /* ------------ Phaser scene ------------ */
   function preload() {
     const s = this;
-    for (const k of ASSET_KEYS) {
-      s.load.image("body_" + k, "assets/tanks/tankBody_" + k + ".png");
-      s.load.image("barrel_" + k, "assets/tanks/barrel_" + k + ".png");
-    }
     s.load.image("proj", "assets/fx/projectile.png");
     for (let i = 1; i <= 5; i++) s.load.image("smoke" + i, "assets/fx/explosionSmoke" + i + ".png");
     for (let i = 1; i <= 12; i++) s.load.image("exp" + i, "assets/exp/tank_explosion" + i + ".png");
@@ -74,8 +55,6 @@
     s.load.audio("turn", ["assets/audio/turn.ogg"]);
     s.load.audio("click", ["assets/audio/click.ogg"]);
   }
-  function capitalizeKey(k) { return k.charAt(0).toUpperCase() + k.slice(1); }
-
   function create() {
     scene = this;
     // background gradient sky (drawn once to a graphics, behind everything)
@@ -471,23 +450,19 @@
     // muzzle flash (hidden until fire)
     const flash = scene.add.image(32, -20, "proj").setScale(0).setTint(0xffe08a);
 
-    // Kenney body as the identity badge above the side-view hull. The pack is
-    // top-down, so it cannot replace the hull on a side-view hill; it still has
-    // to appear in the match step or lobby/room/HUD would be the only places
-    // the asset shows up.
-    const badge = scene.add.image(0, -78, "body_" + assetForColor(t.color)).setOrigin(0.5, 1).setScale(0.36);
-    const label = scene.add.text(0, -52, t.name, {
+    // name label. Kenney bodies are top-down, so they stay on lobby/room/HUD
+    // rather than hovering over this side-view hull.
+    const label = scene.add.text(0, -56, t.name, {
       fontFamily: "Segoe UI, system-ui, sans-serif", fontSize: "15px", color: "#e8eef6",
       stroke: "#0c1422", strokeThickness: 4,
     }).setOrigin(0.5, 1);
 
-    c.add([shadow, tread, hull, turret, barrel, flash, badge, label]);
+    c.add([shadow, tread, hull, turret, barrel, flash, label]);
     // hull rides the slope; the name label stays upright and readable
     const tilt = groundTilt(t.x);
     c.rotation = tilt;
     label.rotation = -tilt;
-    badge.rotation = -tilt;
-    S.tanks.set(t.id, { container: c, hull, barrel, flash, label, badge, color: t.color, facing: t.facing });
+    S.tanks.set(t.id, { container: c, hull, barrel, flash, label, color: t.color, facing: t.facing });
     aimBarrel(t.id, S.aim.angle);
   }
 
@@ -535,7 +510,6 @@
       const tilt = groundTilt(nt.x);
       scene.tweens.add({ targets: tk.container, x: nt.x, y: nt.y, rotation: tilt, duration: 220, ease: "Quad.out" });
       if (tk.label) scene.tweens.add({ targets: tk.label, rotation: -tilt, duration: 220, ease: "Quad.out" });
-      if (tk.badge) scene.tweens.add({ targets: tk.badge, rotation: -tilt, duration: 220, ease: "Quad.out" });
       // terrain moved under the tank -> re-solve the barrel against the new tilt
       if (nt.hp > 0) scene.time.delayedCall(230, () => aimBarrel(nt.id, S.aim.angle));
       if (nt.hp <= 0 && !tk.dead) {
