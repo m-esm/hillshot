@@ -5,8 +5,9 @@ const BASE = process.env.BASE || "https://hillshot.46.225.91.43.sslip.io";
 const CHROME = process.env.CHROME || "";
 
 function line(ok, ask, evidence) {
-  console.log(`${ok ? "PASS" : "FAIL"}  ${ask}  ${evidence}`);
-  return ok;
+  const s = `${ok ? "PASS" : "FAIL"}  ${ask}  ${evidence}`;
+  console.log(s);
+  return s;
 }
 
 async function once(run) {
