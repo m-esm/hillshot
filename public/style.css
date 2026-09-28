@@ -15,6 +15,13 @@ html,body{margin:0;height:100%;background:
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px}
 .panel{background:var(--panel);backdrop-filter:blur(8px);border:1px solid var(--line);
   border-radius:18px;padding:28px 30px;width:min(460px,94vw);box-shadow:0 24px 60px -20px #000a}
+.lobby-tanks{display:flex;align-items:flex-end;justify-content:center;gap:36px;margin:0 0 10px;min-height:72px}
+.lobby-tanks img{width:72px;height:72px;image-rendering:pixelated;filter:drop-shadow(0 8px 0 #0006)}
+.lobby-tanks img.flip{transform:scaleX(-1)}
+.tank-thumb{width:36px;height:36px;object-fit:contain;image-rendering:pixelated;flex:0 0 auto;filter:drop-shadow(0 2px 0 #0005)}
+.go-tank{width:88px;height:88px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto 10px;filter:drop-shadow(0 8px 0 #0006)}
+.players li .tank-thumb{width:40px;height:40px}
+.php .tank-thumb{width:28px;height:28px}
 h1{font-size:34px;margin:0 0 4px;font-weight:800;letter-spacing:-.5px}
 h1 span{color:var(--accent)}
 h2{margin:0 0 4px;font-size:24px}

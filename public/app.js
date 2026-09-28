@@ -64,6 +64,19 @@ $("leaveBtn").onclick = () => location.reload();
 function nameVal() { return ($("name").value.trim() || "Player").slice(0, 16); }
 function err(m) { $("lobbyErr").textContent = m; }
 
+// Kenney tank body per player colour. Same map as game-view.js COLOR_ASSET.
+const TANK_ASSET = {
+  "#4cc9f0": "blue", "#f72585": "red", "#ffd166": "sand", "#06d6a0": "green",
+  "#b5179e": "dark", "#fb8500": "bigRed", "#8ac926": "green", "#ff595e": "red",
+};
+function tankKey(color) {
+  return TANK_ASSET[String(color || "").toLowerCase()] || "blue";
+}
+function tankImg(color, cls) {
+  const k = tankKey(color);
+  return `<img class="${cls || "tank-thumb"}" src="assets/tanks/tankBody_${k}.png" alt="" data-tank="${k}">`;
+}
+
 // boot Phaser once, in the background, so the scene is ready by game start
 GameView.boot();
 
@@ -94,7 +107,7 @@ function renderRoom(m) {
   for (const p of m.players) {
     const li = document.createElement("li");
     if (p.id === YOU) li.classList.add("you");
-    li.innerHTML = `<span class="dot" style="background:${p.color}"></span>
+    li.innerHTML = `${tankImg(p.color)}
       <span>${esc(p.name)}${p.id === YOU ? " (you)" : ""}</span>`;
     const b = document.createElement("span");
     if (p.id === m.hostId) { b.className = "badge host"; b.textContent = "HOST"; }
@@ -277,7 +290,7 @@ function syncHud() {
   for (const t of state.tanks) {
     const el = document.createElement("div");
     el.className = "php" + (t.id === state.turnId ? " turn" : "") + (t.hp <= 0 ? " dead" : "");
-    el.innerHTML = `<span class="dot" style="background:${t.color};width:10px;height:10px"></span>
+    el.innerHTML = `${tankImg(t.color)}
       <span>${esc(t.name)}</span>
       <span class="hpbar"><span class="hpfill" style="width:${Math.max(0, t.hp)}%;background:${hpColor(t.hp)}"></span></span>`;
     hud.appendChild(el);
@@ -307,7 +320,8 @@ function onGameOver(m) {
   stopCountdown();
   const el = $("msg");
   const won = m.winnerId === YOU;
-  el.innerHTML = `${won ? "\ud83c\udfc6 You win!" : "\ud83d\udca5 " + esc(m.winnerName) + " wins"}<small>New match starting from the lobby\u2026</small>`;
+  const w = (state.tanks || []).find((t) => t.id === m.winnerId);
+  el.innerHTML = `${tankImg(w && w.color, "go-tank")}<div>${won ? "You win!" : esc(m.winnerName) + " wins"}</div><small>New match starting from the lobby\u2026</small>`;
   el.classList.remove("hidden");
   setTimeout(() => { el.classList.add("hidden"); show("room"); }, 4500);
 }
